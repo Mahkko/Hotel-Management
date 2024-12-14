@@ -1,4 +1,8 @@
-
+class Hotel {
+    name;
+    static rooms = [];
+    static users = [];
+}
 
 class User {
     //in constructor
@@ -115,9 +119,10 @@ class User {
         else console.log("Error : unexpected service recieved");
     }
 
-    changeRoom(roomID){
-        if(Hotel.rooms)
-        this.roomID=roomID;
+    changeRoom(room){
+        if(Hotel.rooms.includes===room)
+        this.roomID=room.roomID;
+        this.roomType=room.roomType;
     }
 
     //sets isLoggedIn flag to false
