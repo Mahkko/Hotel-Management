@@ -145,3 +145,4 @@ test.orderService("Gym");
 test.orderService("Gym");
 test.checkBill();
 test.logOut();
+
