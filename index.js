@@ -132,17 +132,3 @@ class User {
     }
 
 }
-
-//testing
-
-let dateTest = new Date();
-dateTest.setDate(3);
-
-let test = new User("Džava", "Skript", "ljepota JS-a", "0123456789", 29, 0, "Apartment", dateTest, "JS", "ljepota");
-test.orderService("Pool");
-test.orderService("Gym");
-test.orderService("Gym");
-test.orderService("Gym");
-test.checkBill();
-test.logOut();
-
