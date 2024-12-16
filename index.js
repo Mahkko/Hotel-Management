@@ -8,18 +8,20 @@ class Hotel {
 }
 
 class Room {
-    roomID = 1;
+    roomID;
+    static IDcounter = 1; 
     roomType; // single, double, apartment
     isOccupied;
     currentOccupant;
-    constructor(roomID, roomType) {
-        this.roomID = roomID;
+    constructor(roomType) {
+        this.roomID = Room.IDcounter++;
         this.roomType = roomType;
         this.isOccupied = false;
         Hotel.rooms.push(this);
     }
 }
 
-//changes:
-// added constructor to the class Hotel
-// created class Room
+let room1 = new Room ("single");
+let room2 = new Room ("double");
+
+console.log(Hotel.rooms);
