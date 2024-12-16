@@ -157,6 +157,7 @@ class User {
 class Admin {
   username;
   #password;
+  isSystemOn;
 
   constructor(username, password) {
     this.#password = password;
@@ -164,8 +165,8 @@ class Admin {
   }
 
   registerUser(
-    name,
-    surname,
+    firstName,
+    lastName,
     gender,
     documentID,
     age,
@@ -202,8 +203,8 @@ class Admin {
       // Ovdje opet provjerava da oboje bude false da moze napravit usera
     } else if (isOccupied === false && usernameUsed === false) {
       let korisnik = new User(
-        name,
-        surname,
+        firstName,
+        lastName,
         gender,
         documentID,
         age,
@@ -219,12 +220,127 @@ class Admin {
   }
 
   userChanges(user, change) {
-    let currentUser;
-
+    let currentUserObject;
     for (let i = 0; i < Hotel.users.length; i++) {
       let userObject = Hotel.users[i];
       if (userObject.username === user) {
-        currentUser = user;
+        currentUserObject = userObject;
+        break;
+      }
+    }
+    if (
+      change === "Jednokrevetna Soba" ||
+      change === "Dvokrevetna Soba" ||
+      change === "Apartman"
+    ) {
+      //console.log(currentUserObject);
+
+      currentUserObject.roomType = change;
+    }
+    if (
+      change === "Gym" ||
+      change === "Cinema" ||
+      change === "Restaurant" ||
+      change === "Pool" ||
+      change === "Sauna"
+    ) {
+      currentUserObject.serviceList.push(change);
+    }
+  }
+  billServices(user) {
+    let currentUserObject;
+    let overallPrice = 0;
+    for (let i = 0; i < Hotel.users.length; i++) {
+      let userObject = Hotel.users[i];
+      if (userObject.username === user) {
+        currentUserObject = userObject;
+        break;
+      }
+    }
+    for (let i = 0; i < currentUserObject.serviceList.length; i++) {
+      let element = currentUserObject.serviceList[i];
+      switch (element) {
+        case "Gym":
+          overallPrice += 5;
+          break;
+
+        case "Cinema":
+          overallPrice += 15;
+          break;
+
+        case "Restaurant":
+          overallPrice += 20;
+          break;
+
+        case "Pool":
+          overallPrice += 15;
+          break;
+
+        case "Sauna":
+          overallPrice += 10;
+          break;
+
+        default:
+          console.log("Error : unexpected service found");
+          break;
+      }
+    }
+    console.log(
+      `Korisnik ${currentUserObject.firstName} ${currentUserObject.lastName} je iskoristio $${overallPrice} dodatnih usluga.`
+    );
+  }
+  logOutUser(user) {
+    if (user.isLoggedIn === true) {
+      return (user.isLoggedIn = false);
+    } else {
+      console.log("User already logged out");
+    }
+  }
+  loggingOutUsers(users) {
+    let loggedInUsers = [];
+    for (let i = 0; i < Hotel.users.length; i++) {
+      let currentUserObject = Hotel.users[i];
+      if (currentUserObject.isLoggedIn === true) {
+        loggedInUsers.push(currentUserObject.username);
+      }
+    }
+    if (loggedInUsers.length === 0) {
+      console.log("Trenutno nema prijavljenih korisnika");
+    } else {
+      console.log(`Trenutno prijavljeni korisnici su: ${loggedInUsers}`);
+    }
+
+    if (users !== "All") {
+      for (let i = 0; i < Hotel.users.length; i++) {
+        let curretnUserObject = Hotel.users[i];
+        if (curretnUserObject.username === users) {
+          curretnUserObject.isLoggedIn = false;
+        }
+      }
+      this.isSystemOn = false;
+    }
+    if (users === "All") {
+      for (let i = 0; i < Hotel.users.length; i++) {
+        let curretnUserObject = Hotel.users[i];
+        curretnUserObject.isLoggedIn = false;
+      }
+      this.isSystemOn = false;
+      console.log("Svi korisnici su odjavljeni i system se gasi");
+    }
+  }
+  searchForUser(user) {
+    for (let i = 0; i < Hotel.users.length; i++) {
+      let currentUserObject = Hotel.users[i];
+      if (currentUserObject.username === user) {
+        console.log(currentUserObject);
+        break;
+      }
+      if (currentUserObject.firstName === user) {
+        console.log(currentUserObject);
+        break;
+      }
+      if (currentUserObject.documentID === user) {
+        console.log(currentUserObject);
         break;
       }
     }
@@ -260,30 +376,15 @@ anis.registerUser(
   "1111"
 );
 
-anis.userChanges("a19k");
-/*
-anis.registerUser(
-  "Natasa",
-  "Tomic",
-  "female",
-  "501",
-  25,
-  500,
-  "Jednokrevetna",
-  "Petak",
-  "nnatasaa",
-  "1234"
-);
-anis.registerUser(
-  "Jasmin",
-  "Silver",
-  "male",
-  "",
-  25,
-  1,
-  "Jednokrevetna",
-  "Petak",
-  "silver",
-  "1234"
-);
-*/
+console.log("---------------------------------");
+
+anis.userChanges("a19k", "Dvokrevetna Soba");
+anis.userChanges("a19k", "Cinema");
+anis.userChanges("a19k", "Gym");
+
+console.log(Hotel.users);
+anis.billServices("a19k");
+anis.logOutUser("a19k");
+anis.searchForUser("mahko");
+
+anis.loggingOutUsers("All");
