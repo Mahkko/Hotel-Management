@@ -1,6 +1,6 @@
 class Hotel {
     name;
-    static rooms = [501];
+    static rooms = [];
     static users = [];
 }
 class User {
@@ -168,7 +168,7 @@ class Admin {
         this.username = username;
     }
 
-    loginUser(username, password) {
+    logInUser(username, password) {
         for (let i = 0; i < Hotel.users.length; i++) {
             let user = Hotel.users[i];
 
@@ -184,13 +184,13 @@ class Admin {
     }
 
     registerUser(
-        firstName = "",
-        lastName = "",
-        gender = "",
-        documentID = "",
-        age = "",
-        roomType = "",
-        dateOfArrivial = "",
+        firstName,
+        lastName,
+        gender,
+        documentID,
+        age,
+        roomType,
+        dateOfArrivial,
         username,
         password
     ) {
@@ -211,11 +211,21 @@ class Admin {
         //if no rooms found, aborts
         if (roomID === null) {
             console.log(`${roomType} is not available!`);
-            return 1;
+            return 1;// 1 - room error
+        }
+
+        //USERNAME CHECK
+
+        for (let i = 0; i < Hotel.users.length; i++) {
+            let user = Hotel.users[i];
+
+            if(user.username===username){
+                console.log(`Username "${username}" is not available`);
+                return 2;// 2 - username error
+            }
         }
 
         //REGISTRATION
-        // doesnt need to check, because isOccupied and usernameUsed must both be false
         let korisnik = new User(
             firstName,
             lastName,
@@ -229,15 +239,14 @@ class Admin {
             password
         );
         Hotel.users.push(korisnik);
-        return 0;
-        // return code : 0 - login, 1 - registration , 2 - room unavailible
+        return 0;// 0 - user registered
     }
 
-    userChanges(user, change) {
+    userChanges(username, change) {
         let currentUserObject;
         for (let i = 0; i < Hotel.users.length; i++) {
             let userObject = Hotel.users[i];
-            if (userObject.username === user) {
+            if (userObject.username === username) {
                 currentUserObject = userObject;
                 break;
             }
@@ -261,12 +270,12 @@ class Admin {
             currentUserObject.serviceList.push(change);
         }
     }
-    billServices(user) {
+    billServices(username) {
         let currentUserObject;
         let overallPrice = 0;
         for (let i = 0; i < Hotel.users.length; i++) {
             let userObject = Hotel.users[i];
-            if (userObject.username === user) {
+            if (userObject.username === username) {
                 currentUserObject = userObject;
                 break;
             }
@@ -300,7 +309,7 @@ class Admin {
             }
         }
         console.log(
-            `Korisnik ${currentUserObject.firstName} ${currentUserObject.lastName} je iskoristio $${overallPrice} dodatnih usluga.`
+            `User ${currentUserObject.firstName} ${currentUserObject.lastName} has used ${overallPrice} KM of additional services.`
         );
     }
     logOutUser(user) {
@@ -342,25 +351,25 @@ class Admin {
             console.log("Svi korisnici su odjavljeni i system se gasi");
         }
     }
-    searchForUser(user) {
+    searchForUser(username) {
         for (let i = 0; i < Hotel.users.length; i++) {
             let currentUserObject = Hotel.users[i];
-            if (currentUserObject.username === user) {
+            if (currentUserObject.username === username) {
                 console.log(currentUserObject);
                 break;
             }
-            if (currentUserObject.firstName === user) {
+            if (currentUserObject.firstName === username) {
                 console.log(currentUserObject);
                 break;
             }
-            if (currentUserObject.documentID === user) {
+            if (currentUserObject.documentID === username) {
                 console.log(currentUserObject);
                 break;
             }
         }
     }
 }
-
+//temporary rooms generation
 for(let i = 1; i <= 30; i++) Hotel.rooms.push({roomID:i,roomType:"Single bed room",isOccupied:false,currentOccupant:undefined});
 for(let i = 30; i <= 60; i++) Hotel.rooms.push({roomID:i,roomType:"Double bed room",isOccupied:false,currentOccupant:undefined});
 for(let i = 60; i <= 90; i++) Hotel.rooms.push({roomID:i,roomType:"Apartment",isOccupied:false,currentOccupant:undefined});
@@ -382,7 +391,7 @@ anis.registerUser(
 );
 
 
-anis.loginUser(
+anis.logInUser(
     "mahko",
     "0000"
 );
@@ -393,24 +402,24 @@ anis.registerUser(
     "male",
     "2",
     25,
-    "Single bed room",
+    "Apartment",
     new Date(),
     "a19k",
     "1111",
 );
 
 console.log("---------------------------------");
-/*
+
 anis.userChanges("a19k", "Double bed room");
 anis.userChanges("a19k", "Cinema");
 anis.userChanges("a19k", "Gym");
-*/
+
 
 console.log(Hotel.users);
-/*
+
 anis.billServices("a19k");
+Hotel.users[1].checkBill();
 anis.logOutUser("a19k");
 anis.searchForUser("mahko");
 
 anis.loggingOutUsers("All");
-*/
