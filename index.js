@@ -164,59 +164,69 @@ class Admin {
     this.username = username;
   }
 
-  registerUser(
-    firstName,
-    lastName,
-    gender,
-    documentID,
-    age,
-    roomID,
-    roomType,
-    dateOfArrivial,
-    username,
-    password
-  ) {
-    let isOccupied = false;
-    let usernameUsed = false;
-
-    // Provjerava da li se username koristi
+  loginUser(username,password){
     for (let i = 0; i < Hotel.users.length; i++) {
       let user = Hotel.users[i];
 
-      if (user === username) {
-        usernameUsed = true;
+      if (user.username === username && user.password === password) {
+        user.isLoggedIn = true;
+        console.log(`${username} logged in.`);  //if username exists, gets logged in
+        return 0;
       }
     }
 
-    // Provjerava da li je soba zauzeta
+    console.log("Username or Password invalid!");
+    return 1;
+  }
+
+  registerUser(
+    firstName="",
+    lastName="",
+    gender="",
+    documentID="",
+    age="",
+    roomType="",
+    dateOfArrivial="",
+    username,
+    password
+  ) {
+    let roomID=null;//goes into constructor,empty for now, will be generated below
+
+    //ROOM CHECK
+    // Finds an empty room for the user, if it exists
+
     for (let i = 0; i < Hotel.rooms.length; i++) {
       let hotelRoom = Hotel.rooms[i];
 
-      if (hotelRoom === roomID) {
-        isOccupied = true;
-      }
+      //if current room is taken or wrong type, skip immediately
+      if (hotelRoom.isOccupated===true || hotelRoom.roomType!==roomType) continue;
+      //otherwise, gives the user the id of the current room
+      else roomID=hotelRoom.roomID; 
     }
 
-    // Ako je bilo koje od ovoga true, nece napravit usera
-    if (isOccupied || usernameUsed) {
-      console.log("Username or a room are in use");
-      // Ovdje opet provjerava da oboje bude false da moze napravit usera
-    } else if (isOccupied === false && usernameUsed === false) {
-      let korisnik = new User(
-        firstName,
-        lastName,
-        gender,
-        documentID,
-        age,
-        roomID,
-        roomType,
-        dateOfArrivial,
-        username,
-        password
-      );
-      Hotel.users.push(korisnik);
-      Hotel.rooms.push(roomID);
+    //if no rooms found, aborts
+    if(roomID===null){
+      console.log(`${roomType} is not availible!`);
+      return 1;
     }
+
+    //REGISTRATION
+    // doesnt need to check, because isOccupied and usernameUsed must both be false
+    let korisnik = new User(
+      firstName,
+      lastName,
+      gender,
+      documentID,
+      age,
+      roomID,
+      roomType,
+      dateOfArrivial,
+      username,
+      password
+    );
+      Hotel.users.push(korisnik);
+      return 0;
+      // return code : 0 - login, 1 - registration , 2 - room unavailible
   }
 
   userChanges(user, change) {
@@ -356,9 +366,14 @@ anis.registerUser(
   "male",
   "1",
   25,
-  10,
   "Jednokrevetna",
-  "Petak",
+  new Date(),
+  "mahko",
+  "0000"
+);
+
+
+anis.loginUser(
   "mahko",
   "0000"
 );
@@ -369,22 +384,24 @@ anis.registerUser(
   "male",
   "2",
   25,
-  11,
   "Jednokrevetna",
-  "Petak",
+  new Date(),
   "a19k",
-  "1111"
+  "1111",
 );
 
 console.log("---------------------------------");
-
+/*
 anis.userChanges("a19k", "Dvokrevetna Soba");
 anis.userChanges("a19k", "Cinema");
 anis.userChanges("a19k", "Gym");
+*/
 
 console.log(Hotel.users);
+/*
 anis.billServices("a19k");
 anis.logOutUser("a19k");
 anis.searchForUser("mahko");
 
 anis.loggingOutUsers("All");
+*/
