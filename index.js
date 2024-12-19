@@ -314,7 +314,8 @@ class Admin {
     }
     logOutUser(user) {
         if (user.isLoggedIn === true) {
-            return (user.isLoggedIn = false);
+            user.isLoggedIn = false;
+            console.log(`${user.username}`);
         } else {
             console.log("User already logged out");
         }
@@ -355,14 +356,6 @@ class Admin {
         for (let i = 0; i < Hotel.users.length; i++) {
             let currentUserObject = Hotel.users[i];
             if (currentUserObject.username === username) {
-                console.log(currentUserObject);
-                break;
-            }
-            if (currentUserObject.firstName === username) {
-                console.log(currentUserObject);
-                break;
-            }
-            if (currentUserObject.documentID === username) {
                 console.log(currentUserObject);
                 break;
             }
