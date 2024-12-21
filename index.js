@@ -2,6 +2,23 @@ class Hotel {
     name;
     static rooms = [];
     static users = [];
+    constructor(name) {
+        this.name = name;
+    }
+}
+
+class Room {
+    roomID;
+    static IDcounter = 1;
+    roomType; // single, double, apartment
+    isOccupied;
+    currentOccupant;
+    constructor(roomType) {
+        this.roomID = Room.IDcounter++;
+        this.roomType = roomType;
+        this.isOccupied = false;
+        Hotel.rooms.push(this);
+    }
 }
 class User {
     //in constructor
@@ -51,6 +68,7 @@ class User {
     }
 
     //getter for username, others should be able to see
+    get username() {
     get username() {
         return this.#username;
     }
@@ -127,6 +145,7 @@ class User {
             }
             totalPrice += servicePrice;
             console.log("+ " + element + " : " + servicePrice + " KM");
+
         }
         //total evaluation
         console.log("TOTAL : ", totalPrice, " KM");
@@ -147,7 +166,8 @@ class User {
     }
 
     changeRoom(room) {
-        if (Hotel.rooms.includes === room) this.roomID = room.roomID;
+        if (Hotel.rooms.includes === room)
+            this.roomID = room.roomID;
         this.roomType = room.roomType;
     }
 
@@ -156,6 +176,14 @@ class User {
         this.isLoggedIn = false;
         console.log(this.#username, "logged out.");
     }
+
+}
+
+//CREATING ROOMS FOR HOTEL, mandatory
+for (let i = 0; i < 30; i++) new Room("Single bed room");
+for (let i = 0; i < 30; i++) new Room("Double bed room");
+for (let i = 0; i < 30; i++) new Room("Apartment");
+
 }
 
 class Admin {
