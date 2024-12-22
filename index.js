@@ -20,6 +20,12 @@ class Room {
         Hotel.rooms.push(this);
     }
 }
+
+//CREATING ROOMS FOR HOTEL, mandatory
+for (let i = 0; i < 30; i++) new Room("Single bed room");
+for (let i = 0; i < 30; i++) new Room("Double bed room");
+for (let i = 0; i < 30; i++) new Room("Apartment");
+
 class User {
     //in constructor
     firstName; //string
@@ -68,7 +74,6 @@ class User {
     }
 
     //getter for username, others should be able to see
-    get username() {
     get username() {
         return this.#username;
     }
@@ -179,12 +184,7 @@ class User {
 
 }
 
-//CREATING ROOMS FOR HOTEL, mandatory
-for (let i = 0; i < 30; i++) new Room("Single bed room");
-for (let i = 0; i < 30; i++) new Room("Double bed room");
-for (let i = 0; i < 30; i++) new Room("Apartment");
 
-}
 
 class Admin {
     username;
@@ -340,10 +340,12 @@ class Admin {
             `User ${currentUserObject.firstName} ${currentUserObject.lastName} has used ${overallPrice} KM of additional services.`
         );
     }
-    logOutUser(user) {
-        if (user.isLoggedIn === true) {
+    logOutUser(username) {
+        let user = this.searchForUser(username);//finds the user using the username
+
+        if (user.isLoggedIn) {
             user.isLoggedIn = false;
-            console.log(`${user.username}`);
+            console.log(`${user.username} logged out.`);
         } else {
             console.log("User already logged out");
         }
@@ -357,43 +359,42 @@ class Admin {
             }
         }
         if (loggedInUsers.length === 0) {
-            console.log("Trenutno nema prijavljenih korisnika");
+            console.log("All users already logged out.");
+            return;
         } else {
-            console.log(`Trenutno prijavljeni korisnici su: ${loggedInUsers}`);
+            console.log(`Currently logged in users are: ${loggedInUsers}`);
         }
 
-        if (users !== "All") {
-            for (let i = 0; i < Hotel.users.length; i++) {
-                let curretnUserObject = Hotel.users[i];
-                if (curretnUserObject.username === users) {
-                    curretnUserObject.isLoggedIn = false;
-                }
+        if (users !== "All") {//individual user logout
+            let currentUserObject = this.searchForUser(users);//finds the user using the username
+            if(currentUserObject!==0) {
+            currentUserObject.isLoggedIn=false;
+            console.log(`User ${users} logged out.`);
             }
-            this.isSystemOn = false;
+            else console.log(`User ${users} does not exist.`);
         }
-        if (users === "All") {
+        if (users === "All") {//all users logout
             for (let i = 0; i < Hotel.users.length; i++) {
                 let curretnUserObject = Hotel.users[i];
                 curretnUserObject.isLoggedIn = false;
             }
             this.isSystemOn = false;
-            console.log("Svi korisnici su odjavljeni i system se gasi");
+            console.log("All users logged out. System is turning off.");
         }
     }
     searchForUser(username) {
         for (let i = 0; i < Hotel.users.length; i++) {
             let currentUserObject = Hotel.users[i];
             if (currentUserObject.username === username) {
-                console.log(currentUserObject);
-                break;
+                return currentUserObject;
             }
         }
+        return 0;//user not found
     }
 }
-//temporary rooms generation
-for(let i = 1; i <= 30; i++) Hotel.rooms.push({roomID:i,roomType:"Single bed room",isOccupied:false,currentOccupant:undefined});
-for(let i = 30; i <= 60; i++) Hotel.rooms.push({roomID:i,roomType:"Double bed room",isOccupied:false,currentOccupant:undefined});
-for(let i = 60; i <= 90; i++) Hotel.rooms.push({roomID:i,roomType:"Apartment",isOccupied:false,currentOccupant:undefined});
+
+
+
 
 
     //Testiranje da li sve radi kako treba
@@ -440,7 +441,10 @@ console.log(Hotel.users);
 
 anis.billServices("a19k");
 Hotel.users[1].checkBill();
-anis.logOutUser("a19k");
-anis.searchForUser("mahko");
 
-anis.loggingOutUsers("All");
+anis.logInUser("a19k","1111")
+anis.logOutUser("a19k");
+anis.loggingOutUsers("mahko");
+console.log(anis.searchForUser("mahko"));
+
+anis.loggingOutUsers("mahko");
